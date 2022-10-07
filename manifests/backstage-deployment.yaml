@@ -27,8 +27,6 @@ spec:
           envFrom:
             - secretRef:
                 name: postgres-secret
-            - secretRef:
-                name: backstage-secret
           volumeMounts:
             - name: backstage-config
               mountPath: /config
