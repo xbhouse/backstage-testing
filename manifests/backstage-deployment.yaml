@@ -13,9 +13,13 @@ spec:
       labels:
         app: backstage
     spec:
+      volumes:
+        - name: backstage-config
+          configMap:
+            name: backstage-cm
       containers:
         - name: backstage
-          image: quay.io/bhouse/backstage:latest
+          image: quay.io/bhouse/backstage-app:1.0.1
           imagePullPolicy: IfNotPresent
           ports:
             - name: http
@@ -25,3 +29,6 @@ spec:
                 name: postgres-secret
             - secretRef:
                 name: backstage-secret
+          volumeMounts:
+            - name: backstage-config
+              mountPath: /config
