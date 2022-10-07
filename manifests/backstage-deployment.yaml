@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: backstage
-          image: quay.io/bhouse/backstage:latest
+          image: quay.io/bhouse/backstage-app:1.0.1
           imagePullPolicy: IfNotPresent
           ports:
             - name: http
