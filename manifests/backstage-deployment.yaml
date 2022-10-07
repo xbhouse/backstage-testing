@@ -32,3 +32,4 @@ spec:
           volumeMounts:
             - name: backstage-config
               mountPath: /config
+

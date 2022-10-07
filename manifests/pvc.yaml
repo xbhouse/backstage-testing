@@ -4,7 +4,6 @@ metadata:
   name: postgres-storage-claim
   namespace: backstage-test
 spec:
-  storageClassName: brightly-general-purpose
   accessModes:
     - ReadWriteOnce
   resources:
