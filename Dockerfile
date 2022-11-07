@@ -18,8 +18,7 @@ WORKDIR /app
 COPY --from=packages /app .
 
 # install sqlite3 dependencies
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends libsqlite3-dev python3 build-essential && \
+RUN apt-get update && apt-get install -y libsqlite3-dev python3 cmake g++ && \
     yarn config set python /usr/bin/python3
 
 RUN yarn install --frozen-lockfile --network-timeout 600000 && rm -rf "$(yarn cache dir)"
@@ -34,31 +33,27 @@ RUN yarn --cwd packages/backend build
 # Stage 3 - Build the actual backend image and install production dependencies
 FROM node:16-bullseye-slim
 
-# Install sqlite3 dependencies. You can skip this if you don't use sqlite3 in the image,
-# in which case you should also move better-sqlite3 to "devDependencies" in package.json.
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends libsqlite3-dev python3 build-essential && \
-    rm -rf /var/lib/apt/lists/* && \
-    yarn config set python /usr/bin/python3
-
-# From here on we use the least-privileged `node` user to run the backend.
-USER node
 WORKDIR /app
 
-# This switches many Node.js dependencies to production mode.
-ENV NODE_ENV production
-
 # Copy the install dependencies from the build stage and context
-COPY --from=build --chown=node:node /app/yarn.lock /app/package.json /app/packages/backend/dist/skeleton.tar.gz ./
+COPY --from=build /app/yarn.lock /app/package.json /app/packages/backend/dist/skeleton.tar.gz ./
 RUN tar xzf skeleton.tar.gz && rm skeleton.tar.gz
+
+# install sqlite3 dependencies
+RUN apt-get update && \
+    apt-get install -y libsqlite3-dev python3 cmake g++ && \
+    rm -rf /var/lib/apt/lists/* && \
+    yarn config set python /usr/bin/python3
 
 RUN yarn install --frozen-lockfile --production --network-timeout 600000 && rm -rf "$(yarn cache dir)"
 
 # Copy the built packages from the build stage
-COPY --from=build --chown=node:node /app/packages/backend/dist/bundle.tar.gz .
+COPY --from=build /app/packages/backend/dist/bundle.tar.gz .
 RUN tar xzf bundle.tar.gz && rm bundle.tar.gz
 
 # Copy any other files that we need at runtime
-COPY --chown=node:node app-config.yaml ./
+COPY app-config.yaml ./
+
+RUN chmod -R 777 /app
 
 CMD ["node", "packages/backend", "--config", "app-config.yaml"]

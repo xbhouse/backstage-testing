@@ -1,8 +1,8 @@
 app:
   # Should be the same as backend.baseUrl when using the `app-backend` plugin.
-  #baseUrl: http://localhost:7007
+  baseUrl: http://localhost:7007
   #baseUrl: http://backstage:7007
-  baseUrl: http://backstage-backstage-test.apps.aw-ue1-sb2.mnay.p1.openshiftapps.com
+  #baseUrl: http://backstage-backstage-test.apps.aw-ue1-sb2.mnay.p1.openshiftapps.com
 
 
 backend:
@@ -11,9 +11,9 @@ backend:
   # reachable not just from within the backend host, but from all of your
   # callers. When its value is "http://localhost:7007", it's strictly private
   # and can't be reached by others.
-  #baseUrl: http://localhost:7007
+  baseUrl: http://localhost:7007
   #baseUrl: http://backstage:7007
-  baseUrl: http://backstage-backstage-test.apps.aw-ue1-sb2.mnay.p1.openshiftapps.com
+  #baseUrl: http://backstage-backstage-test.apps.aw-ue1-sb2.mnay.p1.openshiftapps.com
   listen:
     port: 7007
     # The following host directive binds to all IPv4 interfaces when its value
